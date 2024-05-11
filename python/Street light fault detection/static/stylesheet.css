@@ -1,0 +1,212 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+}
+
+main {
+    padding: 10px;
+}
+
+#map-container {
+    height: 400px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+}
+
+main {
+    padding: 10px;
+}
+
+#map-container {
+    height: 400px;
+}
+
+
+
+
+nav {
+    background-color: #f1f1f1;
+    padding: 10px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+nav li.active {
+    font-weight: bold;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+}
+
+nav a:hover {
+  color: #4CAF50;
+}
+
+
+form {
+  margin: 10px 290px;
+  width: 362px;
+  padding: 25px;
+  background: #f1f1f1;
+  border: 1px solid #e5e5e5;
+  div {
+    position: relative;
+    margin: 0 0 1.5em;
+  }
+}
+
+label {
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  margin: 0 0 .5em;
+  font-weight: bold;
+  color: #222;
+}
+
+#user-form select {display: inline-block;
+  width: 100%;
+  position: relative;
+  margin: 0 0 .5em;
+  font-weight: bold;
+  color: #222;
+}
+
+
+#settings-form button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+/* regular input */
+input[type=email], input[type=number], input[type=password], input[type=tel], input[type=text], input[type=url] {
+  display: inline-block;
+  height: 29px;
+  margin: 0;
+  padding: 0 8px;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-top: 1px solid #c0c0c0;
+  box-sizing: border-box;
+  border-radius: 1px;
+  width: 100%;
+  &:hover {
+    border: 1px solid #b9b9b9;
+    border-top: 1px solid #a0a0a0;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  }
+  &:focus {
+    outline: none;
+    border: 1px solid #4d90fe;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  }
+}
+
+#report-form select,
+#report-form input[type="text"],
+#report-form input[type="date"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+#report-form button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#report-container {
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+
+.admin-box {
+  width: 900px;  /* Adjust as needed */
+  margin: 10px auto;
+  padding: 20px;
+  border: none;  /* Remove border for cleaner look */
+  border-radius: 5px;
+  background-color: #93dd71;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* Add subtle shadow */
+}
+
+.admin-box h2 {
+  margin-bottom: 15px;
+}
+
+.admin-box button.view-details {
+  background-color: #8af88e; /* Match header color for consistency */
+  color: rgb(248, 212, 212);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-box .view-details {
+  text-decoration: none;
+  color: black;
+}
+
+#device-list th,
+#device-list td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+#device-list .configuration {
+    text-decoration: none;
+    color: #4CAF50;
+}
+
+.admin-box .view-details:hover {
+  color: #13610c;
+}

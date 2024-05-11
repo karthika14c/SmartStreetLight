@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Light Fault Detection System - Admin</title>
+    <link rel="stylesheet" href="\static\stylesheet.css">
+</head>
+<body>
+    <header>
+        <h1 style="text-align:center">Street Light Fault Detection System</h1>
+    </header>
+    <nav>
+        <div class="sidebar">
+            <ul>
+                <li><a href="/"> Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main id="main-content">
+        <div id="settings" class="view">
+            <h2>Configuration Device</h2>
+            <form id="settings-form" action="/submit_form" method="POST"> <!-- Update the action URL -->
+                <label for="Device-ID">Device ID</label>
+                <input type="text" id="Device-ID" name="Device-ID" required>
+                <br>
+                <label for="location">Location of light:</label>
+                <input type="text" id="Latitude" name="Latitude" placeholder="Latitude" required>
+                <br>
+                <input type="text" id="Longitude" name="Longitude" placeholder="Longitude" required>
+                <br>
+                <input type="text" id="Location" name="Location" placeholder="Location" required>
+                <br>
+                <button type="submit">Save</button>
+                <!-- Error message placeholder -->
+                <div id="error-message" style="color: red;"></div>
+            </form>
+        </div>
+        <div id="devices" class="view">
+            <h2>Device Lists</h2>
+            <table id="device-list">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in devicedata %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>    
+
+    <!-- JavaScript to handle form submission and error message display -->
+    <script>
+        document.getElementById("settings-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var form = this;
+            var formData = new FormData(form);
+            var xhr = new XMLHttpRequest();
+            xhr.open(form.method, form.action, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.status === 'success') {
+                            // Reset the form on success
+                            form.reset();
+                            document.getElementById("error-message").textContent = ''; // Clear error message
+                            // If insert was successful, reload the page
+                            if (response.reload) {
+                                window.location.reload();
+                            }
+                        } else if (response.status === 'error') {
+                            // Display error message
+                            document.getElementById("error-message").textContent = response.message;
+                        }
+                    } else {
+                        // Handle server error
+                        document.getElementById("error-message").textContent = 'Server Error. Please try again later.';
+                    }
+                }
+            };
+            xhr.send(new URLSearchParams(formData).toString());
+        });
+    </script>
+
+</body>
+</html>

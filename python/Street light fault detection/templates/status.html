@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Light Fault Detection System - Charts Reports</title>
+    <link rel="stylesheet" href="\static\stylesheet.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 style ="text-align:center">Street Light Fault Detection System </h1>
+    </header>
+    <nav>
+        <div class="sidebar">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/report">Reports</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main id="main-content">
+        <!-- Chart containers -->
+        <div>
+            <canvas id="lightChart" width="400" height="200"></canvas>
+            <canvas id="voltageChart" width="400" height="200"></canvas>
+            <canvas id="wattChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Buttons for exporting data -->
+        <button onclick="exportToPDF()">Export to PDF</button>
+        <button onclick="exportToCSV()">Export to CSV</button>
+    </main>
+
+    <script>
+        var lightData = {{ lightData | tojson }};
+        var voltageData = {{ voltageData | tojson }};
+        var wattData = {{ wattData | tojson }}; 
+
+// Function to export chart as PDF
+function exportToPDF() {
+            var lightChartCanvas = document.getElementById('lightChart');
+            var voltageChartCanvas = document.getElementById('voltageChart');
+            var wattChartCanvas = document.getElementById('wattChart');
+
+            html2canvas(lightChartCanvas, { allowTaint: true, useCORS: true }).then(function(canvas) {
+                var lightChartImage = canvas.toDataURL('image/png');
+                var pdf = new jsPDF();
+                pdf.addImage(lightChartImage, 'PNG', 10, 10, 180, 100);
+                pdf.save('lightChart.pdf');
+            });
+
+            html2canvas(voltageChartCanvas, { allowTaint: true, useCORS: true }).then(function(canvas) {
+                var voltageChartImage = canvas.toDataURL('image/png');
+                var pdf = new jsPDF();
+                pdf.addImage(voltageChartImage, 'PNG', 10, 10, 180, 100);
+                pdf.save('voltageChart.pdf');
+            });
+
+            html2canvas(wattChartCanvas, { allowTaint: true, useCORS: true }).then(function(canvas) {
+                var wattChartImage = canvas.toDataURL('image/png');
+                var pdf = new jsPDF();
+                pdf.addImage(wattChartImage, 'PNG', 10, 10, 180, 100);
+                pdf.save('wattChart.pdf');
+            });
+        }
+
+        // Function to export data as CSV
+        function exportToCSV() {
+            var lightData = {{ lightData | tojson }};
+            var voltageData = {{ voltageData | tojson }};
+            var wattData = {{ wattData | tojson }};
+
+            var csvContent = "data:text/csv;charset=utf-8,"; 
+
+            // Add Light Data sheet
+            csvContent += "Light Data\n";
+            lightData.forEach(function(row) {
+                // Modify the value based on column 2
+                var column2Value = row[1] === 1 ? "ON" : "OFF";
+                row[1] = column2Value;
+                csvContent += Object.values(row).join(",") + "\n";
+            });
+
+            // Add Voltage Data sheet
+            csvContent += "\nVoltage Data\n";
+            voltageData.forEach(function(row) {
+                csvContent += Object.values(row).join(",") + "\n";
+            });
+
+            // Add Watt Data sheet
+            csvContent += "\nWatt Data\n";
+            wattData.forEach(function(row) {
+                csvContent += Object.values(row).join(",") + "\n";
+            });
+
+            // Create a download link
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "status_data.csv");
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+        }
+         
+        // Function to draw charts with data
+        function drawCharts(lightData, voltageData, wattData) {
+            drawlightChart('lightChart', 'Light Status', lightData);
+            drawChart('voltageChart', 'Voltage', voltageData);
+            drawChart('wattChart', 'Wattage', wattData);
+        }
+//         // Function to draw a chart with provided data
+//         function drawlightChart(canvasId, label, data) {
+//         var timestamps = [];
+//             var values = [];
+
+//             data.forEach(function(entry) {
+//                 timestamps.push(entry[2].toLocaleString());
+//                 values.push(entry[1] === 1 ? 'ON' : 'OFF');
+//             });
+
+//             var ctx = document.getElementById(canvasId).getContext('2d');
+//             var chart = new Chart(ctx, {
+//                 type: 'line',
+//                 data: {
+//                     labels: timestamps,
+//                     datasets: [{
+//                         label: label,
+//                         data: values,
+//                         backgroundColor: 'rgba(255, 19,8, 0.2)',
+//                         borderColor: 'rgba(255, 159, 64, 1)',
+//                         borderWidth: 1
+//                     }]
+//                 },
+//                 options: {
+//                     responsive: true,
+//                     hoverMode: 'index',
+//                     stacked: false,
+//                     tooltips: {
+//                         mode: 'index',
+//                         intersect: false,
+//                         callbacks: {
+//                             title: function(tooltipItem, data) {
+//                                 return data.labels[tooltipItem[0].index] || 'No Data';
+//                             },
+//                             label: function(tooltipItem, data) {
+//                                 var label = data.datasets[tooltipItem.datasetIndex].label || '';
+//                                 var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+//                                 return label + ': ' + value;
+//                             }
+//                         }
+//                     }
+//                 }
+//             });
+//         }
+// // Function to draw a chart with provided data
+// function drawChart(canvasId, label, data) {
+//             var timestamps = data.map(function(entry) { return entry[2].toLocaleString(); });
+//             var values = data.map(function(entry) { return entry[1]; });
+
+//             var ctx = document.getElementById(canvasId).getContext('2d');
+//             var chart = new Chart(ctx, {
+//                 type: 'line',
+//                 data: {
+//                     labels: timestamps,
+//                     datasets: [{
+//                         label: label,
+//                         data: values,
+//                         backgroundColor: 'rgba(255, 159, 64, 0.2)',
+//                         borderColor: 'rgba(255, 159, 64, 1)',
+//                         borderWidth: 1
+//                     }]
+//                 },
+//                 options: {
+//                     responsive: true,
+//                     hoverMode: 'index',
+//                     stacked: false
+//                 }
+//             });
+//         }
+
+        // Function to draw a chart with provided data
+        function drawlightChart(canvasId, label, data) {
+            var timestamps = data.map(function(entry) { return entry[2].toLocaleString(); });
+            var values = data.map(function(entry) { return entry[1]; });
+
+            var ctx = document.getElementById(canvasId).getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: label,
+                        data: values,
+                        backgroundColor: 'rgba(255, 180, 144, 0.2)',
+                        borderColor: 'rgba(25, 189, 164, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    hoverMode: 'index',
+                    stacked: false
+                }
+            });
+        }
+
+
+
+        // Function to draw a chart with provided data
+        function drawChart(canvasId, label, data) {
+            var timestamps = data.map(function(entry) { return entry[2].toLocaleString(); });
+            var values = data.map(function(entry) { return entry[1]; });
+
+            var ctx = document.getElementById(canvasId).getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: label,
+                        data: values,
+                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    hoverMode: 'index',
+                    stacked: false
+                }
+            });
+        }
+
+        // Call the function to draw charts with data
+        drawCharts(lightData, voltageData, wattData);
+        </script>
+</body>
+</html>

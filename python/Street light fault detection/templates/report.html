@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Light Fault Detection System - Admin</title>
+    <link rel="stylesheet" href="\static\stylesheet.css">
+</head>
+<body>
+    <header>
+        <h1 style ="text-align:center">Street Light Fault Detection System </h1>
+    </header>
+    <nav>
+        <div class="sidebar">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/report">Reports</a></li>
+                <li><a href="/map">Map View </a></li>
+            </ul>
+        </div>
+    </nav>
+    <main id="main-content">
+        <div id="reports" class="view">
+            <h2>Generate Report</h2>
+            <form id="report-form">
+                <label for="report-type">Select Report Light:</label>
+                <select id="report-type" name="report-type">
+                    <!-- Placeholder option while dropdown data is being fetched -->
+                    {% for data_tuple in dropdowndata %}
+                    {% set data = data_tuple[0] %}
+                    <option value="{{ data }}">{{ data }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <button type="submit">View Status</button>
+            </form>
+            <div id="report-container"></div>
+        </div>
+    </main>
+
+
+</body>
+    <!-- Ensure that the script is placed at the end of the body or after the form -->
+    <script>
+        // Wait for the DOM content to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select the form element
+            var reportForm = document.getElementById('report-form');
+
+            // Attach event listener to the form submission event
+            reportForm.addEventListener('submit', function(event) {
+                // Prevent the default form submission behavior
+                event.preventDefault();
+
+                // Select the dropdown menu element
+                var dropdown = document.getElementById('report-type');
+
+                // Retrieve the selected value from the dropdown
+                var selectedValue = dropdown.value;
+
+                // Construct the URL with the selected value
+                var href = "/status?report-type=" + selectedValue;
+
+                // Set the form's action attribute to the constructed URL
+                reportForm.setAttribute('action', href);
+
+                // Submit the form programmatically
+                reportForm.submit();
+            });
+        });
+    </script>
+
+</html>

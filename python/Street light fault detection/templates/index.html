@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="\static\styles.css">
+    <style>
+        /* Style for status cell */
+        .widget{
+            background-color: thistle;
+        }
+        .status-cell {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-text {
+            margin-left: 5px;
+        }
+
+        /* Style for status circle */
+        .status-circle {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-circle-off {
+            background-color: red; /* Background color red for "OFF" */
+        }
+
+        .status-circle-on {
+            background-color: green; /* Background color green for "ON" */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 style="text-align:center">Street Light Fault Detection System</h1>
+    </header>
+    <main>
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/report">Reports</a></li>
+                <li><a href="/map">Map View</a></li>
+                <li><a href="/config">Device Configuration</a></li>
+                <!-- <li><a href="/manual">Manual Light Status</a></li> -->
+            </ul>
+        </div>
+        <div class="content">
+            <h2>Dashboard</h2>
+            <div class="widgets">
+                <div class="widget">
+                    <h3>Total Street Lights</h3>
+                    <p id="total-street-lights">{{ total_street_lights }}</p>
+                </div>
+                <div class="widget">
+                    <h3>Active Faults</h3>
+                    <p id="active-faults">{{ active_faults }}</p>
+                </div>
+                <div class="widget">
+                    <h3>Resolved Faults (Last Week)</h3>
+                    <p id="resolved-faults">{{ resolved_faults }}</p>
+                </div>
+            </div>
+            <div class="fault-list">
+                <h2>Recent Faults</h2>
+                <table id="fault-table">
+                    <thead>
+                        <tr>
+                            <th>Light Name</th>
+                            <th>Location</th>
+                            <th>Light Status</th>
+                            <th>Fault Status</th>
+                            <th>Last Time Reported</th>
+                            <th>Device Staus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in fault_data %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td> 
+                                <span class="status-circle {% if row[2] == 0 %}status-circle-off{% else %}status-circle-on{% endif %}"></span>
+                                <span class="{% if row[2] == 0 %}status-off{% else %}status-on{% endif %}">                              
+                            {% if row[2] == 0 %}
+                                OFF
+                            {% else %}
+                                ON
+                            {% endif %}</td>
+                            <td>
+                                <span class="status-circle {% if row[3] == 1 %}status-circle-on{% else %}status-circle-off{% endif %}"></span>
+                                <span class="{% if row[3] == 1 %}status-on{% else %}status-off{% endif %}">
+                                
+                            {% if row[3] == 1 %}
+                                No FAULT
+                            {% else %}
+                                FAULT LIGHT
+                            {% endif %}</td>
+                            <td>{{ row[4] }}</td>
+                            <td>
+                                <span class="status-circle {% if row[5] == 1 %}status-circle-on{% else %}status-circle-off{% endif %}"></span>
+                                <span class="{% if row[5] == 1 %}status-on{% else %}status-off{% endif %}">
+                                
+                            {% if row[5] == 1 %}
+                                Online
+                            {% else %}
+                                Offline
+                            {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+</body>
+<!-- <script>
+    setInterval(function(){
+        window.location.reload();
+    }, 30000); // 30 seconds
+</script> -->
+<script>
+    setInterval(function(){
+        console.log("Reloading page...");
+        // Make an AJAX request to trigger the Python function
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/refresh-data", true);
+        xhr.send();
+        // Reload the page after making the request
+        window.location.reload();
+    }, 30000); // 30 seconds
+</script>
+</html>
